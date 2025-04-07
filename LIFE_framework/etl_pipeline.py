@@ -6,7 +6,7 @@ from code.logger_config import get_logger
 
 logger = None
 
-# main function
+# main function - 23434821 
 def main(config_key):
     global logger
     try:
