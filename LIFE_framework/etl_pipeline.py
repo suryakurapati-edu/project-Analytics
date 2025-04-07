@@ -6,6 +6,7 @@ from code.logger_config import get_logger
 
 logger = None
 
+# main func
 def main(config_key):
     global logger
     try:
