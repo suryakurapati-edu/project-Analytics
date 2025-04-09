@@ -1,0 +1,7 @@
+column_name,data_type
+order_id,int
+customer_id,int
+product_id,int
+order_date,date
+quantity,int
+total_amount,float

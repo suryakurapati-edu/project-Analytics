@@ -21,17 +21,41 @@ def run_query(conn, query):
         logger.error(f"Failed to execute query: {e}")
         raise
 
-def insert_dataframe(conn, df, table, schema):
-    cursor = conn.cursor()
-    for _, row in df.iterrows():
-        columns = list(row.index)
-        values = tuple(row)
-        insert_query = sql.SQL("INSERT INTO {}.{} ({}) VALUES ({})").format(
+def truncate_table(conn, table, schema):
+    """Truncate the specified table before loading new data."""
+    try:
+        cursor = conn.cursor()
+        truncate_query = sql.SQL("TRUNCATE TABLE {}.{}").format(
             sql.Identifier(schema),
-            sql.Identifier(table),
-            sql.SQL(', ').join(map(sql.Identifier, columns)),
-            sql.SQL(', ').join(sql.Placeholder() * len(values))
+            sql.Identifier(table)
         )
-        cursor.execute(insert_query, values)
-    conn.commit()
-    cursor.close()
+        cursor.execute(truncate_query)
+        conn.commit()
+        cursor.close()
+        logger.info(f"Successfully truncated table {schema}.{table}")
+    except Exception as e:
+        logger.error(f"Failed to truncate table {schema}.{table}: {e}")
+        raise
+
+def insert_dataframe(conn, df, table, schema):
+    try:
+        cursor = conn.cursor()
+        for _, row in df.iterrows():
+            columns = list(row.index)
+            values = tuple(row)
+            insert_query = sql.SQL("INSERT INTO {}.{} ({}) VALUES ({})").format(
+                sql.Identifier(schema),
+                sql.Identifier(table),
+                sql.SQL(', ').join(map(sql.Identifier, columns)),
+                sql.SQL(', ').join(sql.Placeholder() * len(values))
+            )
+            cursor.execute(insert_query, values)
+        conn.commit()
+        cursor.close()
+        logger.info(f"Successfully inserted {len(df)} rows into {schema}.{table}")
+    except Exception as e:
+        logger.error(f"Failed to insert data into {schema}.{table}: {e}")
+        conn.rollback()
+        if cursor:
+            cursor.close()
+        raise

@@ -1,14 +1,15 @@
+# Run Command: python etl_pipeline.py "customers_stg"
 import sys
 import os
 import json
 from code.loaders import StageLoader, ProcessedLoader
 from code.logger_config import get_logger
 
-logger = None
+# logger = None
+logger = get_logger()
 
-# main function
 def main(config_key):
-    global logger
+    # global logger
     try:
         config_path = os.path.join("config", f"{config_key}.conf")
 
@@ -19,7 +20,7 @@ def main(config_key):
             conf = json.load(f)
             identifier = conf.get("run_layer")
         
-        logger = get_logger(config_key)
+        # logger = get_logger(config_key)
 
         if identifier == "stage":
             loader = StageLoader(config_path)
@@ -40,4 +41,5 @@ if __name__ == "__main__":
         print("Missing config Argument")
         sys.exit(1)
 
-    main(sys.argv[1])
+    config_key = sys.argv[1]
+    main(config_key)
