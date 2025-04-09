@@ -1,5 +1,0 @@
-2025-04-09 09:53:49,733 - INFO - Custom schema applied: {'customer_id': 'int', 'first_name': 'str', 'last_name': 'str', 'email': 'str', 'city': 'str', 'state': 'str', 'signup_date': 'datetime'}
-2025-04-09 09:53:49,742 - INFO - CSV file read with schema: data/customers.csv
-2025-04-09 09:53:49,800 - INFO - Successfully truncated table stage.customers
-2025-04-09 09:53:49,807 - INFO - Successfully inserted 3 rows into stage.customers
-2025-04-09 09:53:49,807 - INFO - Stage pipeline completed successfully.
