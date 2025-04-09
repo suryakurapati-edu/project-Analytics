@@ -1,0 +1,5 @@
+2025-04-09 12:05:47,006 - INFO - Custom schema applied: {'order_id': 'int', 'customer_id': 'int', 'product_id': 'str', 'order_date': 'datetime', 'quantity': 'int', 'total_amount': 'float'}
+2025-04-09 12:05:47,012 - INFO - CSV file read with schema: data/orders.csv
+2025-04-09 12:05:47,048 - INFO - Successfully truncated table stage.orders
+2025-04-09 12:05:47,056 - INFO - Successfully inserted 4 rows into stage.orders
+2025-04-09 12:05:47,056 - INFO - Stage pipeline completed successfully.
