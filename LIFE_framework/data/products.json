@@ -1,0 +1,20 @@
+[
+  {
+    "product_id": "P001",
+    "name": "Wireless Mouse",
+    "category": "Electronics",
+    "price": 19.99
+  },
+  {
+    "product_id": "P002",
+    "name": "USB-C Cable",
+    "category": "Accessories",
+    "price": 19.99
+  },
+  {
+    "product_id": "P003",
+    "name": "Laptop Stand",
+    "category": "Furniture",
+    "price": 29.99
+  }
+]
