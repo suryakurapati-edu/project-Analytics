@@ -1,0 +1,14 @@
+CREATE TABLE project_analytics.processed.dim_customer (
+    dim_customer_sk UUID PRIMARY KEY,
+    customer_sk     UUID,
+    customer_id     INT,
+    first_name      VARCHAR(255) NOT NULL,
+    last_name       VARCHAR(255) NOT NULL,
+    email           VARCHAR,
+    city            VARCHAR,
+    state           VARCHAR(2),
+    signup_date     DATE,
+    update_timestamp  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    effective_from TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    effective_to TIMESTAMP
+);

@@ -1,0 +1,12 @@
+CREATE TABLE project_analytics.processed.fact_order (
+    fact_order_sk UUID PRIMARY KEY,
+    order_sk        UUID,
+    customer_sk        UUID,
+    product_id      VARCHAR,
+    order_date      DATE,
+    quantity        INT,
+    total_amount    DECIMAL(10,2),
+    update_timestamp  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    effective_from TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    effective_to TIMESTAMP
+);

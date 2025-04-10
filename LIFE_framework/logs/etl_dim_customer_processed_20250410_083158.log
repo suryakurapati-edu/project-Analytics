@@ -1,0 +1,4 @@
+2025-04-10 08:31:58,987 - INFO - Custom schema applied: {'customer_id': 'int', 'first_name': 'str', 'last_name': 'str', 'email': 'str', 'city': 'str', 'state': 'str', 'signup_date': 'datetime'}
+2025-04-10 08:31:59,099 - INFO - Updated 2 existing records in SCD Type 2
+2025-04-10 08:31:59,102 - INFO - Successfully inserted 2 rows into processed.dim_customer
+2025-04-10 08:31:59,102 - INFO - Inserted 2 new/changed records into processed.dim_customer as part of SCD Type 2
