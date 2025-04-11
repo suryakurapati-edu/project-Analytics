@@ -7,10 +7,10 @@ logger = get_logger()
 
 def connect_postgres(config):
     return psycopg2.connect(
-        dbname=config["dbname"],
-        user=config["user"],
-        password=config["password"],
-        host=config["host"],
+        dbname=config["dbname"].strip(),
+        user=config["user"].strip(),
+        password=config["password"].strip(),
+        host=config["host"].strip(),
         port=config["port"]
     )
 

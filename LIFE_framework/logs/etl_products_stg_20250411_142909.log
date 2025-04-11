@@ -1,0 +1,8 @@
+2025-04-11 14:29:09,469 - INFO - Custom schema applied: {'product_id': 'str', 'name': 'str', 'category': 'str', 'price': 'float'}
+2025-04-11 14:29:09,469 - INFO - Reading JSON file: data/products.json
+2025-04-11 14:29:09,472 - INFO - Read 3 rows from JSON file: data/products.json
+2025-04-11 14:29:09,527 - INFO - Inserted 3 clean records into MongoDB collection: products
+2025-04-11 14:29:09,527 - INFO - Reading data from MongoDB source.
+2025-04-11 14:29:09,550 - INFO - Successfully truncated table stage.products
+2025-04-11 14:29:09,555 - INFO - Successfully inserted 3 rows into stage.products
+2025-04-11 14:29:09,555 - INFO - Stage pipeline completed successfully.

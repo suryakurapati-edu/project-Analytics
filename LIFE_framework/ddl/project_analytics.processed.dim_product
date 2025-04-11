@@ -1,0 +1,11 @@
+CREATE TABLE project_analytics.processed.dim_product (
+    dim_product_sk UUID PRIMARY KEY,
+    products_sk     UUID,
+    product_id     VARCHAR,
+    name      VARCHAR(255),
+    category       VARCHAR(255),
+    price           DECIMAL(10,2),
+    update_timestamp  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    effective_from TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    effective_to TIMESTAMP
+);
