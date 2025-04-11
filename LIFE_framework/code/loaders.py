@@ -5,6 +5,7 @@ import uuid
 from datetime import datetime
 import hashlib
 from code.utils.db_utils import connect_postgres, run_query, truncate_table, insert_dataframe
+from code.utils.mongo_utils import connect_mongo, read_from_mongo, load_json_to_mongo_with_schema
 from code.logger_config import get_logger
 
 logger = get_logger()
@@ -32,10 +33,6 @@ class BaseLoader:
         non_date_columns = {k:v for k,v in self.col_types.items() if v!='datetime'}
         date_columns = {k:v for k,v in self.col_types.items() if v=='datetime'}
         return pd.read_csv(file_path, dtype=non_date_columns, parse_dates=list(date_columns.keys()))
-
-    def read_json(self, file_path):
-        logger.info(f"JSON file read with schema: {file_path}")
-        return pd.read_json(file_path, dtype=self.col_types)
     
     def generate_surrogate_key(self, row, primary_keys):
         key_string = "_".join(str(row[pk]) for pk in primary_keys if pd.notna(row[pk]))
@@ -43,21 +40,32 @@ class BaseLoader:
 
 class StageLoader(BaseLoader):
     def run_pipeline(self):
+        source_type = self.config.get("source")
         file_path = self.config["input_file"]
-        file_type = self.config["file_type"]
+        source_type = self.config["source_type"]
         unique_keys = self.config.get("unique_keys", [])
         surrogate_key = self.config.get("surrogate_key")
         nulls_output_path = self.config.get("null_output_file", "data/nulls.csv")
         db_schema = self.config.get("target_db_schema", "stage")
         table = self.config["target_table"]
 
-        if file_type == "csv":
+        if source_type == "csv":
             self.df = self.read_csv(file_path)
-        elif file_type == "json":
-            self.df = self.read_json(file_path)
-
+        elif source_type == "mongo":
+            logger.info(f"Reading JSON file: {file_path}")
+            load_json_to_mongo_with_schema(self.config)
+            logger.info("Reading data from MongoDB source.")
+            client = connect_mongo(self.config["mongodb"])
+            self.df = read_from_mongo(client, self.config["mongodb"])
+            # Cast columns
+            self.df = self.df.astype(self.col_types)
+        else:
+            raise ValueError(f"Unsupported file type: {source_type}")
+        
+        # Remove duplicates
         self.df.drop_duplicates(inplace=True)
 
+        # Null check and write to a file if any
         if unique_keys:
             null_df = self.df[self.df[unique_keys].isnull().any(axis=1)]
             if not null_df.empty:
@@ -65,12 +73,16 @@ class StageLoader(BaseLoader):
                 logger.info(f"Loaded {len(null_df)} null records of file {file_path} into file {nulls_output_path}")
             self.df = self.df.dropna(subset=unique_keys)
         
+        # Add surrogate Key
         self.df[surrogate_key] = self.df.apply(lambda row: self.generate_surrogate_key(row, unique_keys), axis=1)
 
+        # Add load timestamp for tracking
         self.df['load_timestamp'] = datetime.now()
 
+        # Since stage layer is SCD type1, truncate the table before next step of insert
         truncate_table(self.conn, table, db_schema)
 
+        # Insert data to postgres
         insert_dataframe(self.conn, self.df, table, db_schema)
         logger.info("Stage pipeline completed successfully.")
 
@@ -107,7 +119,7 @@ class ProcessedLoader(BaseLoader):
         elif scd_type == 2:
             # SCD Type 2 – Track history of changes
             # 1. Read current target table
-            target_query = f"SELECT * FROM {db_schema}.{table}"
+            target_query = f"SELECT * FROM project_analytics.{db_schema}.{table}"
             existing_df = run_query(self.conn, target_query)
 
             if existing_df.empty:
@@ -145,7 +157,7 @@ class ProcessedLoader(BaseLoader):
                     old_keys = updates_df[merge_keys]
                     conditions = " AND ".join([f"{k} = %s" for k in merge_keys])
                     update_sql = f"""
-                        UPDATE {db_schema}.{table}
+                        UPDATE project_analytics.{db_schema}.{table}
                         SET effective_to = %s
                         WHERE effective_to = %s AND {conditions}
                     """
@@ -156,7 +168,6 @@ class ProcessedLoader(BaseLoader):
                     cursor.close()
 
                     logger.info(f"Updated {len(updates_df)} existing records in SCD Type 2")
-
                 # 2. Insert new/changed rows
                 if not inserts_df.empty:
                     inserts_df['update_timestamp'] = timestamp

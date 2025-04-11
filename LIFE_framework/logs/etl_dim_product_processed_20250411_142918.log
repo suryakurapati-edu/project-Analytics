@@ -1,0 +1,3 @@
+2025-04-11 14:29:18,434 - INFO - Custom schema applied: {'product_id': 'str', 'name': 'str', 'category': 'str', 'price': 'float'}
+2025-04-11 14:29:18,515 - INFO - Successfully inserted 3 rows into processed.dim_product
+2025-04-11 14:29:18,516 - INFO - First-time SCD Type 2 load completed for processed.dim_product
