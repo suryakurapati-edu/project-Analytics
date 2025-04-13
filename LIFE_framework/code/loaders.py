@@ -32,7 +32,9 @@ class BaseLoader:
         logger.info(f"CSV file read with schema: {file_path}")
         non_date_columns = {k:v for k,v in self.col_types.items() if v!='datetime'}
         date_columns = {k:v for k,v in self.col_types.items() if v=='datetime'}
-        return pd.read_csv(file_path, dtype=non_date_columns, parse_dates=list(date_columns.keys()))
+        df = pd.read_csv(file_path, dtype=non_date_columns, parse_dates=list(date_columns.keys()))
+        df[[col for col in date_columns]] = df[[col for col in date_columns]].apply(lambda x: pd.to_datetime(x, format="%Y-%m-%d', errors='coerce"))
+        return df
     
     def generate_surrogate_key(self, row, primary_keys):
         key_string = "_".join(str(row[pk]) for pk in primary_keys if pd.notna(row[pk]))
@@ -58,7 +60,11 @@ class StageLoader(BaseLoader):
             client = connect_mongo(self.config["mongodb"])
             self.df = read_from_mongo(client, self.config["mongodb"])
             # Cast columns
-            self.df = self.df.astype(self.col_types)
+            non_date_columns = {k:v for k,v in self.col_types.items() if v!='datetime'}
+            date_columns = {k:v for k,v in self.col_types.items() if v=='datetime'}
+            self.df = self.df.astype(non_date_columns)
+            self.df[[col for col in date_columns]] = self.df[[col for col in date_columns]].apply(lambda x: pd.to_datetime(x, format="%d/%m/%y", errors='coerce'))
+
         else:
             raise ValueError(f"Unsupported file type: {source_type}")
         
