@@ -1,20 +1,25 @@
 select
-a.order_sk,
-b.customer_sk,
-c.products_sk,
-a.order_date,
-a.quantity,
-a.total_amount
-from project_analytics.stage.orders a
-left join (
-    select * from 
-    project_analytics.processed.dim_customer
-    where current_timestamp between effective_from and effective_to
- ) b
-on a.customer_id = b.customer_id
-left join (
-    select * from 
-    project_analytics.processed.dim_product
-    where current_timestamp between effective_from and effective_to
- ) c
-on a.product_id = c.product_id
+stage_layer_sk,
+ott_platform,
+type,
+title,
+director,
+cast,
+country,
+date_added,
+release_year,
+duration_min,
+duration_season as num_seasons,
+rating,
+categories,
+description
+from
+(
+select *, 'amazon_prime' ott_platform, amazon_prime_sk stage_layer_sk from project_analytics.stage.amazon_prime where current_timestamp between effective_from and effective_to
+union
+select *, 'disney_plus' ott_platform, disney_plus_sk stage_layer_sk from project_analytics.stage.disney_plus where current_timestamp between effective_from and effective_to
+union
+select *, 'hulu' ott_platform, hulu_sk stage_layer_sk from project_analytics.stage.hulu where current_timestamp between effective_from and effective_to
+union
+select *, 'netflix' ott_platform, netflix_sk stage_layer_sk from project_analytics.stage.netflix where current_timestamp between effective_from and effective_to
+) a

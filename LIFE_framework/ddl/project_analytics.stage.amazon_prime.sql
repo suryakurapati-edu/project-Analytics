@@ -1,5 +1,5 @@
-CREATE TABLE project_analytics.stage.hulu (
-    hulu_sk         UUID PRIMARY KEY,
+CREATE TABLE project_analytics.stage.amazon_prime (
+    amazon_prime_sk UUID PRIMARY KEY,
     show_id         VARCHAR(255) UNIQUE NOT NULL,
     type            VARCHAR(255),
     title           VARCHAR(255),
