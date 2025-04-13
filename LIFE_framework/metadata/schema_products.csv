@@ -1,5 +1,0 @@
-column_name,data_type
-product_id,str
-name,str
-category,str
-price,float
