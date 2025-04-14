@@ -60,7 +60,7 @@ def load_json_to_mongo_with_schema(config):
     # Convert datetime columns
     for col, dtype in col_types.items():
         if dtype == "datetime":
-            df[col] = pd.to_datetime(df[col], errors='coerce')
+            df[col] = pd.to_datetime(df[col], format="%d/%m/%y", errors='coerce')
 
     logger.info(f"Read {len(df)} rows from JSON file: {file_path}")
 

@@ -1,5 +1,5 @@
-CREATE TABLE project_analytics.stage.disney_plus(
-    disney_plus_sk  UUID PRIMARY KEY,
+CREATE TABLE project_analytics.stage.amazon_prime (
+    amazon_prime_sk UUID PRIMARY KEY,
     show_id         VARCHAR UNIQUE NOT NULL,
     type            VARCHAR,
     title           VARCHAR,

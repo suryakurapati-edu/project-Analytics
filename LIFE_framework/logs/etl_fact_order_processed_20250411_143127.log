@@ -1,3 +1,0 @@
-2025-04-11 14:31:27,977 - INFO - Custom schema applied: {'order_id': 'int', 'customer_id': 'int', 'product_id': 'str', 'order_date': 'datetime', 'quantity': 'int', 'total_amount': 'float'}
-2025-04-11 14:31:28,081 - INFO - Successfully inserted 4 rows into processed.fact_order
-2025-04-11 14:31:28,081 - INFO - First-time SCD Type 2 load completed for processed.fact_order
