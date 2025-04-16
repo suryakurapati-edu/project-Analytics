@@ -87,7 +87,7 @@ class OTTDashboard:
         fig6 = px.bar(df_filtered.groupby("ott_platform")["avg_tvshow_seasons"].mean().reset_index(), x="ott_platform", y="avg_tvshow_seasons", color="ott_platform", title="Avg Seasons per TV Show")
         st.plotly_chart(fig6, use_container_width=True)
 
-        st.markdown("These insights help evaluate content trends, platform strategy, and user preferences for building your OTT business.")
+        # st.markdown("These insights help evaluate content trends, platform strategy, and user preferences for building your OTT business.")
 
 # Main
 if __name__ == "__main__":
