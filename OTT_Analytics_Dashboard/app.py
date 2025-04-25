@@ -10,8 +10,10 @@ import psycopg2
 st.set_page_config(page_title="OTT Analytics Dashboard", layout="wide")
 
 # Load dashboard config file
-def load_config(path="dashboard.conf"):
-    with open(path, 'r') as f:
+def load_config(filename="dashboard.conf"):
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    full_path = os.path.join(base_path, filename)
+    with open(full_path, 'r') as f:
         return json.load(f)
 
 # Cache-safe version of data loader function
